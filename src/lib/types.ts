@@ -3,7 +3,7 @@ export interface TaskData {
   real: number;
   percentual: number;
   gap: number;
-  status: 'critico' | 'atencao' | 'bom';
+  status: 'critico' | 'atencao' | 'bom' | 'sem_dados';
 }
 
 export interface RNData {
@@ -51,18 +51,20 @@ export function getStatus(percentual: number): 'critico' | 'atencao' | 'bom' {
   return 'bom';
 }
 
-export function getStatusEmoji(status: 'critico' | 'atencao' | 'bom'): string {
+export function getStatusEmoji(status: 'critico' | 'atencao' | 'bom' | 'sem_dados'): string {
   switch (status) {
     case 'critico': return '🔴';
     case 'atencao': return '🟡';
     case 'bom': return '🟢';
+    case 'sem_dados': return '⚪';
   }
 }
 
-export function getStatusLabel(status: 'critico' | 'atencao' | 'bom'): string {
+export function getStatusLabel(status: 'critico' | 'atencao' | 'bom' | 'sem_dados'): string {
   switch (status) {
     case 'critico': return 'Crítico';
     case 'atencao': return 'Atenção';
     case 'bom': return 'Bom';
+    case 'sem_dados': return 'Sem dados';
   }
 }

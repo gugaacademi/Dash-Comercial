@@ -11,11 +11,13 @@ interface RNDetailProps {
 
 export default function RNDetail({ rn, onBack }: RNDetailProps) {
   const sortedTasks = [...TASK_NAMES].sort((a, b) => {
-    return (rn.tasks[a]?.percentual ?? 0) - (rn.tasks[b]?.percentual ?? 0);
+    const aVal = rn.tasks[a]?.status === 'sem_dados' ? 999 : (rn.tasks[a]?.percentual ?? 0);
+    const bVal = rn.tasks[b]?.status === 'sem_dados' ? 999 : (rn.tasks[b]?.percentual ?? 0);
+    return aVal - bVal;
   });
 
   const tasksNeedAction = TASK_NAMES.filter(
-    (name) => rn.tasks[name] && rn.tasks[name].percentual < 100
+    (name) => rn.tasks[name] && rn.tasks[name].status !== 'sem_dados' && rn.tasks[name].percentual < 100
   ).sort((a, b) => (rn.tasks[a]?.percentual ?? 0) - (rn.tasks[b]?.percentual ?? 0));
 
   return (
@@ -79,29 +81,41 @@ export default function RNDetail({ rn, onBack }: RNDetailProps) {
               {TASK_NAMES.map((name) => {
                 const task = rn.tasks[name];
                 if (!task) return null;
+                const semDados = task.status === 'sem_dados';
                 return (
-                  <tr key={name} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-4 py-3 font-medium text-gray-900">{name}</td>
-                    <td className="px-4 py-3 text-right tabular-nums text-gray-600">
-                      {task.meta.toLocaleString('pt-BR')}
+                  <tr key={name} className={`transition-colors ${semDados ? 'bg-gray-50 opacity-60' : 'hover:bg-gray-50'}`}>
+                    <td className="px-4 py-3 font-medium text-gray-900">
+                      {name}
+                      {semDados && <span className="ml-2 text-xs text-gray-400 italic">sem visibilidade</span>}
                     </td>
-                    <td className="px-4 py-3 text-right tabular-nums font-semibold text-gray-900">
-                      {task.real.toLocaleString('pt-BR')}
+                    <td className="px-4 py-3 text-right tabular-nums text-gray-400">
+                      {semDados ? '—' : task.meta.toLocaleString('pt-BR')}
+                    </td>
+                    <td className="px-4 py-3 text-right tabular-nums font-semibold text-gray-400">
+                      {semDados ? '—' : task.real.toLocaleString('pt-BR')}
                     </td>
                     <td className="px-4 py-3 text-center">
-                      <span className={`font-bold tabular-nums ${
-                        task.percentual >= 100 ? 'text-emerald-600' : task.percentual >= 80 ? 'text-amber-600' : 'text-red-600'
-                      }`}>
-                        {task.percentual}%
-                      </span>
+                      {semDados ? (
+                        <span className="text-gray-400 text-sm">—</span>
+                      ) : (
+                        <span className={`font-bold tabular-nums ${
+                          task.percentual >= 100 ? 'text-emerald-600' : task.percentual >= 80 ? 'text-amber-600' : 'text-red-600'
+                        }`}>
+                          {task.percentual}%
+                        </span>
+                      )}
                     </td>
                     <td className="px-4 py-3 min-w-[140px]">
-                      <ProgressBar value={task.percentual} showLabel={false} />
+                      {semDados ? (
+                        <span className="text-gray-300 text-sm italic">sem dados</span>
+                      ) : (
+                        <ProgressBar value={task.percentual} showLabel={false} />
+                      )}
                     </td>
                     <td className={`px-4 py-3 text-right tabular-nums font-semibold ${
-                      task.gap >= 0 ? 'text-emerald-600' : 'text-red-600'
+                      semDados ? 'text-gray-300' : task.gap >= 0 ? 'text-emerald-600' : 'text-red-600'
                     }`}>
-                      {task.gap >= 0 ? '+' : ''}{task.gap.toLocaleString('pt-BR')}
+                      {semDados ? '—' : `${task.gap >= 0 ? '+' : ''}${task.gap.toLocaleString('pt-BR')}`}
                     </td>
                     <td className="px-4 py-3 text-center">
                       <StatusBadge status={task.status} />
@@ -123,6 +137,18 @@ export default function RNDetail({ rn, onBack }: RNDetailProps) {
           {sortedTasks.map((name) => {
             const task = rn.tasks[name];
             if (!task) return null;
+            if (task.status === 'sem_dados') {
+              return (
+                <div
+                  key={name}
+                  className="bg-gray-100 rounded-lg p-3 text-center text-gray-400 border border-dashed border-gray-300"
+                  title={`${name}: sem visibilidade`}
+                >
+                  <div className="text-xs font-medium truncate">{name}</div>
+                  <div className="text-lg">⚪</div>
+                </div>
+              );
+            }
             const bgColor = task.percentual >= 100
               ? 'bg-emerald-500'
               : task.percentual >= 90

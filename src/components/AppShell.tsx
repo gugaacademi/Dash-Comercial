@@ -108,8 +108,8 @@ export default function AppShell() {
               AC
             </div>
             <div>
-              <h1 className="text-xl font-bold text-gray-900">Acompanhamento Comercial</h1>
-              <p className="text-sm text-gray-500">Selecione seu perfil para acessar o dashboard</p>
+              <h1 className="text-xl font-bold text-gray-900">Acompanhamento de Task</h1>
+              <p className="text-sm text-gray-500">Selecione sua sala para acessar o dashboard</p>
             </div>
           </div>
         </div>
@@ -117,7 +117,7 @@ export default function AppShell() {
 
       <main className="max-w-4xl mx-auto px-4 py-12">
         <div className="text-center mb-10">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">Bem-vindo</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-2">DISCAR DUTRA</h2>
           <p className="text-gray-500">Escolha o Gerente de Vendas para visualizar o dashboard</p>
         </div>
 

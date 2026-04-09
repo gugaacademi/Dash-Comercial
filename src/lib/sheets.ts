@@ -44,6 +44,13 @@ function parseRow(row: string[]): RNData | null {
     const cols = COLUMN_MAP[taskName];
     const meta = parseNumber(row[cols.metaCol]);
     const real = parseNumber(row[cols.realCol]);
+
+    // Sem visibilidade: Meta e Real ambos zerados → não entra no cálculo
+    if (meta === 0 && real === 0) {
+      tasks[taskName] = { meta: 0, real: 0, percentual: 0, gap: 0, status: 'sem_dados' as 'critico' };
+      continue;
+    }
+
     const percentual = meta > 0 ? Math.round((real / meta) * 100) : 0;
     const gap = Math.round((real - meta) * 100) / 100;
     const status = getStatus(percentual);
