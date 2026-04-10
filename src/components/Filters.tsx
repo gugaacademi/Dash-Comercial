@@ -3,6 +3,7 @@
 import { RNData, TASK_NAMES } from '@/lib/types';
 
 export type FilterStatus = 'todos' | 'critico' | 'atencao' | 'bom';
+export type SortOrder = 'padrao' | 'pior_melhor' | 'melhor_pior';
 
 interface FiltersProps {
   rns: RNData[];
@@ -12,6 +13,8 @@ interface FiltersProps {
   setRnFilter: (s: string) => void;
   taskFilter: string;
   setTaskFilter: (s: string) => void;
+  sortOrder: SortOrder;
+  setSortOrder: (s: SortOrder) => void;
 }
 
 export default function Filters({
@@ -22,6 +25,8 @@ export default function Filters({
   setRnFilter,
   taskFilter,
   setTaskFilter,
+  sortOrder,
+  setSortOrder,
 }: FiltersProps) {
   const statusOptions: { value: FilterStatus; label: string; emoji: string }[] = [
     { value: 'todos', label: 'Todos', emoji: '📋' },
@@ -92,6 +97,30 @@ export default function Filters({
               </option>
             ))}
           </select>
+        </div>
+
+        {/* Ordenação */}
+        <div>
+          <label className="block text-xs font-semibold text-gray-500 uppercase mb-2">Ordenar</label>
+          <div className="flex gap-1">
+            {[
+              { value: 'padrao'      as SortOrder, label: 'Padrão',         emoji: '↕️' },
+              { value: 'pior_melhor' as SortOrder, label: 'Menor → Maior',  emoji: '📈' },
+              { value: 'melhor_pior' as SortOrder, label: 'Maior → Menor',  emoji: '📉' },
+            ].map((opt) => (
+              <button
+                key={opt.value}
+                onClick={() => setSortOrder(opt.value)}
+                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
+                  sortOrder === opt.value
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {opt.emoji} {opt.label}
+              </button>
+            ))}
+          </div>
         </div>
       </div>
     </div>

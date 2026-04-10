@@ -5,7 +5,7 @@ import { GVData, RNData } from '@/lib/types';
 import KPICards from './KPICards';
 import RNTable from './RNTable';
 import RNDetail from './RNDetail';
-import Filters, { FilterStatus } from './Filters';
+import Filters, { FilterStatus, SortOrder } from './Filters';
 
 interface GVDashboardProps {
   gv: GVData;
@@ -17,6 +17,7 @@ export default function GVDashboard({ gv, onBack }: GVDashboardProps) {
   const [statusFilter, setStatusFilter] = useState<FilterStatus>('todos');
   const [rnFilter, setRnFilter] = useState('');
   const [taskFilter, setTaskFilter] = useState('');
+  const [sortOrder, setSortOrder] = useState<SortOrder>('padrao');
 
   const filteredRNs = useMemo(() => {
     let result = gv.rns;
@@ -33,8 +34,14 @@ export default function GVDashboard({ gv, onBack }: GVDashboardProps) {
       result = result.filter((rn) => rn.tasksCriticas.includes(taskFilter));
     }
 
+    if (sortOrder === 'pior_melhor') {
+      result = [...result].sort((a, b) => a.media - b.media);
+    } else if (sortOrder === 'melhor_pior') {
+      result = [...result].sort((a, b) => b.media - a.media);
+    }
+
     return result;
-  }, [gv.rns, statusFilter, rnFilter, taskFilter]);
+  }, [gv.rns, statusFilter, rnFilter, taskFilter, sortOrder]);
 
   if (selectedRN) {
     return (
@@ -72,6 +79,8 @@ export default function GVDashboard({ gv, onBack }: GVDashboardProps) {
         setRnFilter={setRnFilter}
         taskFilter={taskFilter}
         setTaskFilter={setTaskFilter}
+        sortOrder={sortOrder}
+        setSortOrder={setSortOrder}
       />
 
       {/* RN Table */}
