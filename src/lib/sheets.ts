@@ -8,6 +8,8 @@ const COLUMN_MAP: Record<string, { metaCol: number; realCol: number }> = {
   'Marketplace':          { metaCol: 9, realCol: 10 },
   'Volume':               { metaCol: 11, realCol: 12 },
   'Faturamento Score 5':  { metaCol: 13, realCol: 14 },
+  'Digitalização Bees':   { metaCol: 15, realCol: 16 },
+  '+RGB':                 { metaCol: 17, realCol: 18 },
 };
 
 function parseNumber(val: unknown): number {
@@ -76,7 +78,7 @@ function parseRow(row: string[]): RNData | null {
 }
 
 export async function fetchSheetData(sheetId: string, apiKey: string): Promise<GVData[]> {
-  const range = 'A2:O100';
+  const range = 'A2:S100';
   const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${range}?key=${apiKey}`;
 
   const res = await fetch(url, { next: { revalidate: 0 } });

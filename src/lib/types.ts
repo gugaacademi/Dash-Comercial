@@ -32,6 +32,8 @@ export const TASK_NAMES = [
   'Marketplace',
   'Volume',
   'Faturamento Score 5',
+  'Digitalização Bees',
+  '+RGB',
 ] as const;
 
 export type TaskName = (typeof TASK_NAMES)[number];
